@@ -1,4 +1,5 @@
 from kruskal import Kruskal
+from Prim import Prim
 import numpy as np
 
 # Créer un graphe d'exemple sous forme de matrice d'adjacence
@@ -12,10 +13,10 @@ graph = np.array([
 ])
 
 # Créer une instance de Kruskal avec notre graphe
-kruskal = Kruskal(graph)
+prim = Prim(graph)
 
 # Obtenir l'arbre couvrant minimal
-mst = kruskal.kruskal()
+mst = prim.prim()
 
 print(mst[0])
 print("Poids total de l'arbre couvrant minimal:", mst[1])
