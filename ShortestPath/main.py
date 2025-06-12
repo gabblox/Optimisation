@@ -32,6 +32,6 @@ for i, j, weight in connections:
 
 sp = Djikstra.Djikstra(graph)
 # Test du chemin le plus court entre le sommet 0 et 15
-path, distance = sp.find_shortest_path(2, 15)
+path, distance = sp.find_shortest_path2(3, 15)
 print(f"Chemin le plus court : {path}")
 print(f"Distance totale : {distance}")
