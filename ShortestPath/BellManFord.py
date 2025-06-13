@@ -43,71 +43,64 @@ class BellmanFord(ShortestPath.ShortestPath):
         
         best_path, min_dist = min(all_paths, key=lambda x: x[1])
         return best_path, min_dist
-    
+
+    """
     def find_shortest_path2(self, start, end):
         n = len(self.graph)
-        distance = [float('inf')] * n
-        distance[start] = 0
+        memo = {}  # Pour la mémoïzation
         predecessor = {}
-        memo = {}
         
-        def d(x, k):
-            """
-            d_k(x) : longueur minimale des chemins reliant start et x 
-            avec au plus k arcs
-            """
-            # Cas de base
+        def d(v, k):
+            if k < 0:
+                return float('inf')
             if k == 0:
-                return float('inf') if x != start else 0
+                return 0 if v == start else float('inf')
                 
-            # Vérifier mémoïzation
-            key = (x, k)
+            key = (v, k)
             if key in memo:
                 return memo[key]
                 
-            # Optimisation : si k > n, utiliser le résultat de n
-            if k > n:
-                return d(x, n)
+            # Initialiser avec la valeur précédente
+            min_dist = d(v, k-1)
+            best_pred = predecessor.get(v)
             
-            # Initialiser avec la distance actuelle
-            min_dist = distance[x]
-            
-            # Pour chaque prédécesseur potentiel y de x
-            for y in range(n):
-                if self.graph[y][x] != 0:  # s'il y a une arête y->x
-                    dist_via_y = d(y, k-1)
-                    if dist_via_y != float('inf'):
-                        new_dist = dist_via_y + self.graph[y][x]
-                        if new_dist < min_dist:
-                            min_dist = new_dist
-                            distance[x] = min_dist  # Mettre à jour la distance
-                            predecessor[x] = y      # Mettre à jour le prédécesseur
-        
+            # Essayer d'améliorer en passant par chaque sommet u
+            for u in range(n):
+                if self.graph[u][v] != 0:  # s'il y a une arête u->v
+                    new_dist = d(u, k-1) + self.graph[u][v]
+                    if new_dist < min_dist:
+                        min_dist = new_dist
+                        best_pred = u
+                        
+            # Mettre à jour le prédécesseur si on a trouvé un meilleur chemin
+            if best_pred is not None:
+                predecessor[v] = best_pred
+                
             memo[key] = min_dist
             return min_dist
-
-        # Calculer pour tous les k jusqu'à n
-        for k in range(n+1):
-            dist = d(end, k)
-            # Si on trouve une amélioration, continuer
-            if k == n and dist < d(end, n-1):
-                continue
-    
-        # Reconstruction du chemin
-        if end not in predecessor:
+        
+        # Calculer la plus courte distance avec n-1 arcs maximum
+        final_dist = d(end, n-1)
+        
+        # Si pas de chemin trouvé
+        if final_dist == float('inf'):
             return None, float('inf')
-            
+        
+        # Reconstruction du chemin
         path = []
         current = end
-        visited = set()
-        
         while current != start:
-            if current in visited:  # Éviter les boucles infinies
-                break
-            visited.add(current)
+            if current not in predecessor:
+                return None, float('inf')
             path.append(current)
             current = predecessor[current]
         path.append(start)
         path.reverse()
         
-        return path, distance[end]
+        # Calculer la distance réelle le long du chemin
+        real_dist = 0
+        for i in range(len(path)-1):
+            real_dist += self.graph[path[i]][path[i+1]]
+        
+        return path, real_dist"""
+        

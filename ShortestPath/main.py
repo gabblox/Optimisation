@@ -77,7 +77,7 @@ for start in start_points:
     for end in end_points:
         if start != end:
             print(f"\n=== Chemin de {start} à {end} ===")
-            path, dist = bf.find_shortest_path2(start, end)
+            path, dist = bf.find_shortest_path1(start, end)
             print(f"Chemin trouvé : {path}")
             print(f"Distance annoncée : {dist}")
             print(f"Distance vérifiée : {verify_path(path, graph_large)}")
