@@ -1,6 +1,7 @@
 import numpy as np
 from ShortestPath import ShortestPath
 import Djikstra 
+import BellManFord
 
 # Créer un graphe 16x16 initialement rempli de zéros
 graph = np.zeros((16, 16), dtype=int)
@@ -30,8 +31,54 @@ for i, j, weight in connections:
     graph[i][j] = weight
     graph[j][i] = weight  # Rendre le graphe symétrique
 
-sp = Djikstra.Djikstra(graph)
-# Test du chemin le plus court entre le sommet 0 et 15
-path, distance = sp.find_shortest_path2(3, 15)
-print(f"Chemin le plus court : {path}")
-print(f"Distance totale : {distance}")
+sp = BellManFord.BellmanFord(graph)
+sp1 = Djikstra.Djikstra(graph)
+
+def verify_path(path, graph):
+    """Vérifie la validité d'un chemin et calcule sa distance totale"""
+    if not path:
+        return None
+    distance = 0
+    for i in range(len(path)-1):
+        if graph[path[i]][path[i+1]] == 0:
+            return None
+        distance += graph[path[i]][path[i+1]]
+    return distance
+
+# Graphe de test avec poids négatifs
+graph_negatifs = np.array([
+    [0, -1, 4, 0],
+    [-1, 0, 3, 2],
+    [4, 3, 0, -3],
+    [0, 2, -3, 0]
+])
+
+bf = BellManFord.BellmanFord(graph_negatifs)
+
+# Graphe de test plus grand avec poids négatifs et positifs
+graph_large = np.array([
+    [0, -1, 4, 0, 0, 8, 0, 2],
+    [-1, 0, 3, 2, -2, 0, 0, 0],
+    [4, 3, 0, -3, 0, -2, 1, 0],
+    [0, 2, -3, 0, 5, 0, 4, 0],
+    [0, -2, 0, 5, 0, 1, -4, 3],
+    [8, 0, -2, 0, 1, 0, 0, -1],
+    [0, 0, 1, 4, -4, 0, 0, 2],
+    [2, 0, 0, 0, 3, -1, 2, 0]
+])
+
+bf = BellManFord.BellmanFord(graph_large)
+
+# Test de plusieurs chemins
+start_points = [0, 2, 5]
+end_points = [4, 6, 7]
+
+for start in start_points:
+    for end in end_points:
+        if start != end:
+            print(f"\n=== Chemin de {start} à {end} ===")
+            path, dist = bf.find_shortest_path2(start, end)
+            print(f"Chemin trouvé : {path}")
+            print(f"Distance annoncée : {dist}")
+            print(f"Distance vérifiée : {verify_path(path, graph_large)}")
+
