@@ -44,5 +44,8 @@ def optimize_with_scipy(func, x0):
     result = opt.minimize(func, x0)
     return result.x,result.func(result.x)
 
-
-    
+def scipy_grad(func, x0):
+    """
+    Compute the gradient of a function using scipy's numerical gradient.
+    """
+    return opt.approx_fprime(x0, func, epsilon=1e-8)
