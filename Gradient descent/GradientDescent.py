@@ -34,3 +34,15 @@ def func_grad(func,x):
         
         grad[i] = (f_plus - f_minus) / (2 * epsilon)
     return grad
+
+def chain_grad(func1,func2,x0):
+    grad2 = func_grad(func2, x0)
+    grad1=func_grad(func1,func2(x0))
+    return np.dot(grad1, grad2)
+
+def optimize_with_scipy(func, x0):
+    result = opt.minimize(func, x0)
+    return result.x,result.func(result.x)
+
+
+    
